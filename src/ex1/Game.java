@@ -7,7 +7,7 @@ import java.util.Random;
 // 금고 클래스 -> 비밀번호 맞는지 틀리는지 확인
 // 경찰쓰레드 1개 : 10초 안에 해커가 안도망가면 해커 감옥으로
 // 해커 쓰레드 -> 오름차순1개, 내림차순1개
-public class Main {
+public class Game {
     public static final int MAX_PASSWORD = 9999;
     public static void main(String[] args) {
         Random randomNum = new Random();
