@@ -12,7 +12,7 @@ import java.math.BigInteger;
 public class Daemon {
 
     public static void main(String[] args) throws InterruptedException {
-        Thread thread = new Thread(new Interrupt.LongComputationThread(new BigInteger("10000000"), new BigInteger("1000000000")));
+        Thread thread = new Thread(new Interrupt.LongComputationThread(new BigInteger("2"), new BigInteger("1000")));
 
         thread.setDaemon(true);
         thread.start();
