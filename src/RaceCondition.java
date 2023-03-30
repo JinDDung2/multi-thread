@@ -7,9 +7,9 @@ public class RaceCondition {
         DecreaseThread decreaseThread = new DecreaseThread(inventory);
 
         increaseThread.start();
-        increaseThread.join();
-
         decreaseThread.start();
+
+        increaseThread.join();
         decreaseThread.join();
 
         System.out.println("items = " + inventory.getItems());
