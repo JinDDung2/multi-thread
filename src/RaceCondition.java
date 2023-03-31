@@ -6,6 +6,7 @@ public class RaceCondition {
         IncreaseThread increaseThread = new IncreaseThread(inventory);
         DecreaseThread decreaseThread = new DecreaseThread(inventory);
 
+        // Inventory 객체이기에 힙에 저장 -> 공유됨
         increaseThread.start();
         decreaseThread.start();
 
@@ -48,16 +49,30 @@ public class RaceCondition {
     public static class Inventory {
         private int items = 0;
 
+        Object lock = new Object();
+
+        /**
+         * 이 작업은 단일 작업인가? -> NO -> 3개의 작업임
+         * 1. 메모리에 저장된 items 의 현재 값을 불러옴
+         * 2. items++ 실행
+         * 3. 변경된 결과 itmes 를 메모리에 저장
+         */
         public void increase() {
-            items++;
+            synchronized (this.lock) {
+                items++;
+            }
         }
 
-        public void decrease() {
-            items--;
+        public synchronized void decrease() {
+            synchronized (this.lock) {
+                items--;
+            }
         }
 
         public int getItems() {
-            return items;
+            synchronized (this.lock) {
+                return items;
+            }
         }
     }
 }
