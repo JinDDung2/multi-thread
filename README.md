@@ -65,3 +65,54 @@ class NewThread extends Thread {
 - 여러개의 쓰레드가 코드 블록이나 전체 메서드에 액세스 할 수 없도록 설계된 락킹 매커니즘
 - 전체 메서드를 동기화할 필요는 없음 -> 실행하는데  필요한 최소한만 임계영역으로 설정 -> 더 많은 코드를 여러 쓰레드가 접근 가능 -> 성능 향상 가능
 
+## ReentrantLock
+- 객체에 적용된 synchornized 키워드 처럼 작동
+- 명확한 locking과 unlocking 필요 (unlocking을 구현해놓지 않으면 버그 발생, unlocking을 구현한다 하더라도 예외로 인해 메서드 자체가 실행되지 않을 수도 있음)
+  - finally 활용해서 예외가 터져도 unlock 실행
+```java
+Lock lockObject = new ReentrantLock();
+Resource resource = new Resource();
+...
+public void method() {
+    lockObject.lock();
+    ...
+    useMethod(resouce);
+    lockObject.unlock();
+}
+```
+
+```java
+Lock lockObject = new ReentrantLock();
+Resource resource = new Resource();
+...
+public void method() throws AnyException{
+    lockObject.lock();
+    ...
+    try {
+        AnyOperation();
+        useMethod(resouce);
+    }
+    finally {
+        lockObject.unlock();
+    }
+}
+```
+- lockInterruptibly() 활용 -> 락을 흭득하다가 중단된 쓰레드는 외부 인터럽트를 실행
+- trylock() 활용
+  - lock 메서드로 쓰레드를 중단할 수 없음 -> 실시간으로 쓰레드가 block 되는 걸 피할 수 있음
+  - lock을 true, false로 구분
+  - 많은 기능이 연결되지만, race condition 막을 수 있음
+```java
+if(lockObject.lock()){
+        try{
+        useMethod(resouce);
+        }
+        finally{
+        lockObject.unlock();   
+        }
+}
+```
+## ReentrantReadWriteLock
+  - readLock -> 여러개의 read 쓰레드가 공유 자원에 접근 가능
+  - writeLock -> 한 개의 쓰레드만 공유 자원에 접근 가능
+  - ReentrantLock으로만 설정한 lock 보다 300% 빠름
